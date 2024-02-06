@@ -16,7 +16,7 @@ module.exports.greet = function (name) {
 
 // Testing arrays
 module.exports.getCurrencies = function () {
-    return ["USD", "AUD", "EUR"];
+    return ["USD", "AUD", "EUR", "EGP"];
 };
 
 // Testing objects
