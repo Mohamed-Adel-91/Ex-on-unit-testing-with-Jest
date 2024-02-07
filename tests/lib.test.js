@@ -50,3 +50,35 @@ describe("getCurrencies", () => {
         expect(result).toEqual(expect.arrayContaining(["USD", "AUD", "EUR"]));
     });
 });
+
+describe("getProduct", () => {
+    it("returns the product with given id from products list", () => {
+        const result = lib.getProduct(1);
+        // here if i want it the same  as in the example, I can use toEqual() method
+        expect(result).toEqual({ id: 1, price: 10 });
+        // we can  also check if  some properties are there and they have correct values
+        expect(result).toMatchObject({ id: 1, price: 10 });
+        // or we can spot on  one property
+        expect(result).toHaveProperty("id", 1);
+    });
+});
+
+describe("registerUser", () => {
+    it("should throw if username is falsy", () => {
+        // Null
+        // undefined
+        // NaN
+        // ''
+        // false
+        const args = [null, undefined, "", NaN, false, 0];
+        args.forEach((arg) => {
+            expect(() => lib.registerUser(arg)).toThrowError(/username/i);
+        });
+    });
+
+    it("adds a new user to users list", () => {
+        const result = lib.registerUser("Mohamed");
+        expect(result).toMatchObject({ username: "Mohamed" });
+        expect(result.id).toBeGreaterThan(0);
+    });
+});
