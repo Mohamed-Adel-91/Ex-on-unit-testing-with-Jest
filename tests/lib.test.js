@@ -1,5 +1,6 @@
 const lib = require("../lib");
 const db = require("../db");
+const mail = require("../mail");
 
 describe("absolute", () => {
     it("absolute - should return positive no if input is positive ", () => {
@@ -93,5 +94,37 @@ describe("apply Discount", () => {
         const order = { customerId: 1, totalPrice: 10 };
         lib.applyDiscount(order);
         expect(order.totalPrice).toBe(9);
+    });
+});
+
+describe("notify Customer", () => {
+    it("should send an email to customer", () => {
+        db.getCustomerSync = function (customerId) {
+            return { email: "a" };
+        };
+        let mailSent = false;
+        mail.send = function (email, message) {
+            mailSent = true;
+        };
+        lib.notifyCustomer({ customerId: 1 });
+        expect(mailSent).toBe(true);
+    });
+});
+
+/* anther  example of previous */
+
+describe("notify Customer", () => {
+    it("should send an email to customer", () => {
+        db.getCustomerSync = jest.fn().mockReturnValue({ email: "a" });
+        mail.send = jest.fn();
+        lib.notifyCustomer({ customerId: 1 });
+        expect(mail.send).toHaveBeenCalled(); // Verify that the mock was called once
+        expect(mail.send).toHaveBeenCalledWith(
+            "a",
+            "Your order was placed successfully."
+        ); // this method must be have the same arguments  as in real implementation
+        expect(mail.send.mock.calls[0][0]).toBe("a");
+        expect(mail.send.mock.calls[0][1]).toMatch(/order/); // this  expression will match any string that contains 'order' to not write the same string like in last method in line 125
+        expect(db.getCustomerSync).toHaveBeenCalledWith(1); // Checking args passed to getCustomerSync()
     });
 });
